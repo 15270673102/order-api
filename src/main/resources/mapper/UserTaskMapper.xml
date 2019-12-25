@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loushi.mapper.UserTaskMapper">
+    <resultMap id="BaseResultMap" type="com.loushi.model.UserTask">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="task_no" property="taskNo" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="taskform" property="taskform" jdbcType="VARCHAR"/>
+        <result column="platform" property="platform" jdbcType="INTEGER"/>
+        <result column="source_link" property="sourceLink" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="total_num" property="totalNum" jdbcType="INTEGER"/>
+        <result column="remain_num" property="remainNum" jdbcType="INTEGER"/>
+        <result column="task_status" property="taskStatus" jdbcType="INTEGER"/>
+        <result column="consume_time" property="consumeTime" jdbcType="INTEGER"/>
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP"/>
+        <result column="cancel_time" property="cancelTime" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="task_desc" property="taskDesc" jdbcType="VARCHAR"/>
+        <result column="reserve_day" property="reserveDay" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, user_id, task_no, title, taskform, platform, source_link, price, total_num, remain_num, 
+    task_status, consume_time, publish_time, cancel_time, create_time, task_desc, reserve_day
+  </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_task
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectTaskAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_task
+        where task_status = #{taskStatus}
+    </select>
+    <select id="selectByPaublishTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_task
+        where user_id = #{uid} and id = #{taskId}
+    </select>
+    <select id="selectBozhuTaskList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_task
+        <where>
+            <if test="uid != null">
+                and user_id = #{uid}
+            </if>
+            <if test="taskStatus != null">
+                and task_status = #{taskStatus}
+            </if>
+            <if test="filterTime != null">
+                and DATE_FORMAT(publish_time,'%Y-%m-%d') = #{filterTime}
+            </if>
+        </where>
+        order by publish_time desc
+    </select>
+    <select id="selectByUserNameTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_task
+        <where>
+            <if test="userId !=null and userId !=''">
+                and user_id = #{userId}
+            </if>
+            <if test="startTime != null and endTime != null and startTime != '' and endTime != '' ">
+                AND
+                STR_TO_DATE(publish_time, '%Y-%m-%d')
+                BETWEEN
+                STR_TO_DATE(#{startTime}, '%Y-%m-%d')
+                and
+                STR_TO_DATE(#{endTime}, '%Y-%m-%d')
+            </if>
+        </where>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_task
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.loushi.model.UserTask" useGeneratedKeys="true" keyProperty="id">
+    insert into user_task (user_id, task_no, title, 
+      taskform, platform, source_link, 
+      price, total_num, remain_num, 
+      task_status, consume_time, publish_time, 
+      cancel_time, create_time, task_desc, 
+      reserve_day)
+    values (#{userId,jdbcType=INTEGER}, #{taskNo,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{taskform,jdbcType=VARCHAR}, #{platform,jdbcType=INTEGER}, #{sourceLink,jdbcType=VARCHAR}, 
+      #{price,jdbcType=DOUBLE}, #{totalNum,jdbcType=INTEGER}, #{remainNum,jdbcType=INTEGER}, 
+      #{taskStatus,jdbcType=INTEGER}, #{consumeTime,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP}, 
+      #{cancelTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{taskDesc,jdbcType=VARCHAR}, 
+      #{reserveDay,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.loushi.model.UserTask" useGeneratedKeys="true" keyProperty="id">
+        insert into user_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="taskNo != null">
+                task_no,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="taskform != null">
+                taskform,
+            </if>
+            <if test="platform != null">
+                platform,
+            </if>
+            <if test="sourceLink != null">
+                source_link,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="totalNum != null">
+                total_num,
+            </if>
+            <if test="remainNum != null">
+                remain_num,
+            </if>
+            <if test="taskStatus != null">
+                task_status,
+            </if>
+            <if test="consumeTime != null">
+                consume_time,
+            </if>
+            <if test="publishTime != null">
+                publish_time,
+            </if>
+            <if test="cancelTime != null">
+                cancel_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="taskDesc != null">
+                task_desc,
+            </if>
+            <if test="reserveDay != null">
+                reserve_day,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="taskNo != null">
+                #{taskNo,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="taskform != null">
+                #{taskform,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=INTEGER},
+            </if>
+            <if test="sourceLink != null">
+                #{sourceLink,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DOUBLE},
+            </if>
+            <if test="totalNum != null">
+                #{totalNum,jdbcType=INTEGER},
+            </if>
+            <if test="remainNum != null">
+                #{remainNum,jdbcType=INTEGER},
+            </if>
+            <if test="taskStatus != null">
+                #{taskStatus,jdbcType=INTEGER},
+            </if>
+            <if test="consumeTime != null">
+                #{consumeTime,jdbcType=INTEGER},
+            </if>
+            <if test="publishTime != null">
+                #{publishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cancelTime != null">
+                #{cancelTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="taskDesc != null">
+                #{taskDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="reserveDay != null">
+                #{reserveDay,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.loushi.model.UserTask">
+        update user_task
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="taskNo != null">
+                task_no = #{taskNo,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="taskform != null">
+                taskform = #{taskform,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                platform = #{platform,jdbcType=INTEGER},
+            </if>
+            <if test="sourceLink != null">
+                source_link = #{sourceLink,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DOUBLE},
+            </if>
+            <if test="totalNum != null">
+                total_num = #{totalNum,jdbcType=INTEGER},
+            </if>
+            <if test="remainNum != null">
+                remain_num = #{remainNum,jdbcType=INTEGER},
+            </if>
+            <if test="taskStatus != null">
+                task_status = #{taskStatus,jdbcType=INTEGER},
+            </if>
+            <if test="consumeTime != null">
+                consume_time = #{consumeTime,jdbcType=INTEGER},
+            </if>
+            <if test="publishTime != null">
+                publish_time = #{publishTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cancelTime != null">
+                cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="taskDesc != null">
+                task_desc = #{taskDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="reserveDay != null">
+                reserve_day = #{reserveDay,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.loushi.model.UserTask">
+    update user_task
+    set user_id = #{userId,jdbcType=INTEGER},
+      task_no = #{taskNo,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      taskform = #{taskform,jdbcType=VARCHAR},
+      platform = #{platform,jdbcType=INTEGER},
+      source_link = #{sourceLink,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE},
+      total_num = #{totalNum,jdbcType=INTEGER},
+      remain_num = #{remainNum,jdbcType=INTEGER},
+      task_status = #{taskStatus,jdbcType=INTEGER},
+      consume_time = #{consumeTime,jdbcType=INTEGER},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      cancel_time = #{cancelTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      task_desc = #{taskDesc,jdbcType=VARCHAR},
+      reserve_day = #{reserveDay,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

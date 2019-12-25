@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loushi.mapper.UsersMapper">
+
+    <resultMap id="BaseResultMap" type="com.loushi.model.Users">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="user_role" jdbcType="INTEGER" property="userRole"/>
+        <result column="user_status" jdbcType="INTEGER" property="userStatus"/>
+        <result column="credit_num" jdbcType="INTEGER" property="creditNum"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="wechat" jdbcType="VARCHAR" property="wechat"/>
+        <result column="alipay" jdbcType="VARCHAR" property="alipay"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="dept_id" jdbcType="INTEGER" property="deptId"/>
+        <result column="active_code" jdbcType="VARCHAR" property="activeCode"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, phone, password, nick_name, user_role, user_status, credit_num, real_name, wechat, 
+    alipay, create_time, dept_id, active_code
+  </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from users
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByUsernamePassword" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from users
+        where phone = #{username} and password = #{password} and user_role = #{userRole}
+    </select>
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from users
+        where phone = #{phoneNum} and user_role = #{userRoleType}
+    </select>
+    <select id="selectByUserName" resultType="com.loushi.model.Users">
+        select *
+        from users
+        where phone = #{userName}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from users
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" keyProperty="id" parameterType="com.loushi.model.Users" useGeneratedKeys="true">
+    insert into users (phone, password, nick_name, 
+      user_role, user_status, credit_num, 
+      real_name, wechat, alipay, 
+      create_time, dept_id, active_code
+      )
+    values (#{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
+      #{userRole,jdbcType=INTEGER}, #{userStatus,jdbcType=INTEGER}, #{creditNum,jdbcType=INTEGER}, 
+      #{realName,jdbcType=VARCHAR}, #{wechat,jdbcType=VARCHAR}, #{alipay,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{deptId,jdbcType=INTEGER}, #{activeCode,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" keyProperty="id" parameterType="com.loushi.model.Users" useGeneratedKeys="true">
+        insert into users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="userRole != null">
+                user_role,
+            </if>
+            <if test="userStatus != null">
+                user_status,
+            </if>
+            <if test="creditNum != null">
+                credit_num,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="wechat != null">
+                wechat,
+            </if>
+            <if test="alipay != null">
+                alipay,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="deptId != null">
+                dept_id,
+            </if>
+            <if test="activeCode != null">
+                active_code,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="userRole != null">
+                #{userRole,jdbcType=INTEGER},
+            </if>
+            <if test="userStatus != null">
+                #{userStatus,jdbcType=INTEGER},
+            </if>
+            <if test="creditNum != null">
+                #{creditNum,jdbcType=INTEGER},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="alipay != null">
+                #{alipay,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deptId != null">
+                #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="activeCode != null">
+                #{activeCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.loushi.model.Users">
+        update users
+        <set>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="userRole != null">
+                user_role = #{userRole,jdbcType=INTEGER},
+            </if>
+            <if test="userStatus != null">
+                user_status = #{userStatus,jdbcType=INTEGER},
+            </if>
+            <if test="creditNum != null">
+                credit_num = #{creditNum,jdbcType=INTEGER},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="wechat != null">
+                wechat = #{wechat,jdbcType=VARCHAR},
+            </if>
+            <if test="alipay != null">
+                alipay = #{alipay,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=INTEGER},
+            </if>
+            <if test="activeCode != null">
+                active_code = #{activeCode,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.loushi.model.Users">
+    update users
+    set phone = #{phone,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      user_role = #{userRole,jdbcType=INTEGER},
+      user_status = #{userStatus,jdbcType=INTEGER},
+      credit_num = #{creditNum,jdbcType=INTEGER},
+      real_name = #{realName,jdbcType=VARCHAR},
+      wechat = #{wechat,jdbcType=VARCHAR},
+      alipay = #{alipay,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      dept_id = #{deptId,jdbcType=INTEGER},
+      active_code = #{activeCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

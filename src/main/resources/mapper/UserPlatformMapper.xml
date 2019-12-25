@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loushi.mapper.UserPlatformMapper">
+    <resultMap id="BaseResultMap" type="com.loushi.model.UserPlatform">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="platform_type" property="platformType" jdbcType="INTEGER"/>
+        <result column="account_nick_name" property="accountNickName" jdbcType="VARCHAR"/>
+        <result column="account_uid" property="accountUid" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, user_id, platform_type, account_nick_name, account_uid, create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_platform
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByUid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_platform
+        <where>
+            <if test="uid != null">
+                and user_id = #{uid}
+            </if>
+            <if test="platformTpye != null">
+                and platform_type = #{platformTpye}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectByUidPlatFormAccountUid" resultType="java.lang.Integer">
+        select count(id)
+        from user_platform
+        where platform_type = #{userPlatformType} and account_uid = #{accountId}
+    </select>
+    <select id="selectByUidPlatFormType" resultType="java.lang.Integer">
+        select count(id)
+        from user_platform
+        where user_id = #{uid} and platform_type = #{userPlatformType}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select *
+        from user_platform
+    </select>
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_platform
+        where user_id = #{userId,jdbcType=INTEGER}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from user_platform
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.loushi.model.UserPlatform" useGeneratedKeys="true" keyProperty="id">
+        insert into user_platform (user_id, platform_type, account_nick_name,
+                                   account_uid, create_time)
+        values (#{userId,jdbcType=INTEGER}, #{platformType,jdbcType=INTEGER}, #{accountNickName,jdbcType=VARCHAR},
+                #{accountUid,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.loushi.model.UserPlatform" useGeneratedKeys="true" keyProperty="id">
+        insert into user_platform
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="platformType != null">
+                platform_type,
+            </if>
+            <if test="accountNickName != null">
+                account_nick_name,
+            </if>
+            <if test="accountUid != null">
+                account_uid,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="platformType != null">
+                #{platformType,jdbcType=INTEGER},
+            </if>
+            <if test="accountNickName != null">
+                #{accountNickName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountUid != null">
+                #{accountUid,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.loushi.model.UserPlatform">
+        update user_platform
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="platformType != null">
+                platform_type = #{platformType,jdbcType=INTEGER},
+            </if>
+            <if test="accountNickName != null">
+                account_nick_name = #{accountNickName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountUid != null">
+                account_uid = #{accountUid,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.loushi.model.UserPlatform">
+        update user_platform
+        set user_id           = #{userId,jdbcType=INTEGER},
+            platform_type     = #{platformType,jdbcType=INTEGER},
+            account_nick_name = #{accountNickName,jdbcType=VARCHAR},
+            account_uid       = #{accountUid,jdbcType=VARCHAR},
+            create_time       = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

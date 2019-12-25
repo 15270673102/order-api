@@ -1,0 +1,13 @@
+version: '3'
+services:
+  java:
+    image: order-api:1.0
+    container_name: order-api
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /log/order-api/:/log/
+    ports:
+      - "8889:8080"

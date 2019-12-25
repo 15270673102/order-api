@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loushi.mapper.UserAppealMapper">
+    <resultMap id="BaseResultMap" type="com.loushi.model.UserAppeal">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="order_id" property="orderId" jdbcType="INTEGER"/>
+        <result column="role" property="role" jdbcType="INTEGER"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="pics" property="pics" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, order_id, role, content, pics, create_time
+  </sql>
+
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_appealuser_appeal
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="appealList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_appeal
+        where order_id = #{orderId}
+        order by create_time desc
+    </select>
+    <select id="selectByOrderIdMaxCreateTime" resultType="java.util.Date">
+        select max(create_time)
+        from user_appeal
+        where order_id = #{orderId} and role = #{value}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_appeal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.loushi.model.UserAppeal" useGeneratedKeys="true" keyProperty="id">
+    insert into user_appeal (order_id, role, content, 
+      pics, create_time)
+    values (#{orderId,jdbcType=INTEGER}, #{role,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{pics,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+    <insert id="insertSelective" parameterType="com.loushi.model.UserAppeal" useGeneratedKeys="true" keyProperty="id">
+        insert into user_appeal
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="role != null">
+                role,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="pics != null">
+                pics,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                #{orderId,jdbcType=INTEGER},
+            </if>
+            <if test="role != null">
+                #{role,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="pics != null">
+                #{pics,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.loushi.model.UserAppeal">
+        update user_appeal
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=INTEGER},
+            </if>
+            <if test="role != null">
+                role = #{role,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="pics != null">
+                pics = #{pics,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.loushi.model.UserAppeal">
+    update user_appeal
+    set order_id = #{orderId,jdbcType=INTEGER},
+      role = #{role,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      pics = #{pics,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

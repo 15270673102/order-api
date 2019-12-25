@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loushi.mapper.UserOrderMapper">
+    <resultMap id="BaseResultMap" type="com.loushi.model.UserOrder">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="submit_time" property="submitTime" jdbcType="TIMESTAMP"/>
+        <result column="check_time" property="checkTime" jdbcType="TIMESTAMP"/>
+        <result column="order_num" property="orderNum" jdbcType="INTEGER"/>
+        <result column="order_price" property="orderPrice" jdbcType="DOUBLE"/>
+        <result column="order_status" property="orderStatus" jdbcType="INTEGER"/>
+        <result column="failure_cause" property="failureCause" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, order_no, user_id, task_id, start_time, submit_time, check_time, order_num, order_price,
+        order_status, failure_cause, create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByStateUid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order
+        <where>
+            <if test="uid != null">
+                and user_id = #{uid}
+            </if>
+            <if test="state != null">
+                and order_status = #{state}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectByUidTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order
+        <where>
+            <if test="uid != null">
+                and user_id = #{uid}
+            </if>
+            <if test="filterTime != null">
+                and DATE_FORMAT(submit_time,'%Y-%m') = #{filterTime}
+            </if>
+            <if test="orderStatus != null">
+                and order_status = #{orderStatus}
+            </if>
+        </where>
+        order by submit_time desc
+    </select>
+    <select id="selectByUid" resultType="com.loushi.vo.order.CommissionRecordModelVO">
+        SELECT uo.user_id as userId,
+        p.pay_status as payStatus,
+        p.money as money
+        FROM user_order AS uo
+        JOIN user_pay AS p ON uo.id = p.order_id
+        WHERE uo.user_id = #{uid};
+    </select>
+    <select id="selectByUidOrderId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order
+        <where>
+            <if test="uid != null">
+                and user_id = #{uid}
+            </if>
+            <if test="orderId != null">
+                and id = #{orderId}
+            </if>
+        </where>
+    </select>
+    <select id="selectBytaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order
+        where task_id = #{taskId}
+    </select>
+    <select id="selectByUidTaskId" resultType="java.lang.Integer">
+        select count(id)
+        from user_order
+        where user_id = #{uid} and task_id = #{taskId}
+    </select>
+    <select id="selectByCheckFaild" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order
+        where user_id = #{uid} and order_status in (#{state1}, #{state2}, #{state3}, #{state4})
+        order by create_time desc
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_order
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.loushi.model.UserOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into user_order (order_no, user_id, task_id,
+        start_time, submit_time, check_time,
+        order_num, order_price, order_status,
+        failure_cause, create_time)
+        values (#{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{taskId,jdbcType=INTEGER},
+        #{startTime,jdbcType=TIMESTAMP}, #{submitTime,jdbcType=TIMESTAMP}, #{checkTime,jdbcType=TIMESTAMP},
+        #{orderNum,jdbcType=INTEGER}, #{orderPrice,jdbcType=DOUBLE}, #{orderStatus,jdbcType=INTEGER},
+        #{failureCause,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.loushi.model.UserOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into user_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="taskId != null">
+                task_id,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="submitTime != null">
+                submit_time,
+            </if>
+            <if test="checkTime != null">
+                check_time,
+            </if>
+            <if test="orderNum != null">
+                order_num,
+            </if>
+            <if test="orderPrice != null">
+                order_price,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="failureCause != null">
+                failure_cause,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null">
+                #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="submitTime != null">
+                #{submitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checkTime != null">
+                #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderNum != null">
+                #{orderNum,jdbcType=INTEGER},
+            </if>
+            <if test="orderPrice != null">
+                #{orderPrice,jdbcType=DOUBLE},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="failureCause != null">
+                #{failureCause,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.loushi.model.UserOrder">
+        update user_order
+        <set>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="taskId != null">
+                task_id = #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="submitTime != null">
+                submit_time = #{submitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum,jdbcType=INTEGER},
+            </if>
+            <if test="orderPrice != null">
+                order_price = #{orderPrice,jdbcType=DOUBLE},
+            </if>
+            <if test="orderStatus != null">
+                order_status = #{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="failureCause != null">
+                failure_cause = #{failureCause,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.loushi.model.UserOrder">
+        update user_order
+        set order_no = #{orderNo,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=INTEGER},
+        task_id = #{taskId,jdbcType=INTEGER},
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+        submit_time = #{submitTime,jdbcType=TIMESTAMP},
+        check_time = #{checkTime,jdbcType=TIMESTAMP},
+        order_num = #{orderNum,jdbcType=INTEGER},
+        order_price = #{orderPrice,jdbcType=DOUBLE},
+        order_status = #{orderStatus,jdbcType=INTEGER},
+        failure_cause = #{failureCause,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

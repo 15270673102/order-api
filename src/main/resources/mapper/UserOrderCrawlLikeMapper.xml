@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.loushi.mapper.UserOrderCrawlLikeMapper">
+    <resultMap id="BaseResultMap" type="com.loushi.model.UserOrderCrawlLike">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="task_id" property="taskId" jdbcType="INTEGER"/>
+        <result column="msg_id" property="msgId" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="screen_name" property="screenName" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, task_id, msg_id, created_at, user_id, screen_name, create_time
+  </sql>
+
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order_crawl_like
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByTaskIdAndUid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order_crawl_like
+        where task_id = #{taskId} and user_id = #{accountUid}
+    </select>
+    <select id="selectByMsgId" resultType="com.loushi.model.UserOrderCrawlLike">
+        select
+        <include refid="Base_Column_List"/>
+        from user_order_crawl_like
+        where msg_id = #{likeId}
+    </select>
+    <select id="selectByUserIdAndTaskId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM
+        `user_order_crawl_like` a
+        WHERE
+        a.`user_id` = #{userId}
+        AND
+        a.`task_id` = #{taskId}
+        order by create_time desc
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_order_crawl_like
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="com.loushi.model.UserOrderCrawlLike" useGeneratedKeys="true" keyProperty="id">
+    insert into user_order_crawl_like (task_id, msg_id, created_at, 
+      user_id, screen_name, create_time
+      )
+    values (#{taskId,jdbcType=INTEGER}, #{msgId,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
+      #{userId,jdbcType=VARCHAR}, #{screenName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.loushi.model.UserOrderCrawlLike" useGeneratedKeys="true" keyProperty="id">
+        insert into user_order_crawl_like
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">
+                task_id,
+            </if>
+            <if test="msgId != null">
+                msg_id,
+            </if>
+            <if test="createdAt != null">
+                created_at,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="screenName != null">
+                screen_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">
+                #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="msgId != null">
+                #{msgId,jdbcType=VARCHAR},
+            </if>
+            <if test="createdAt != null">
+                #{createdAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="screenName != null">
+                #{screenName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.loushi.model.UserOrderCrawlLike">
+        update user_order_crawl_like
+        <set>
+            <if test="taskId != null">
+                task_id = #{taskId,jdbcType=INTEGER},
+            </if>
+            <if test="msgId != null">
+                msg_id = #{msgId,jdbcType=VARCHAR},
+            </if>
+            <if test="createdAt != null">
+                created_at = #{createdAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="screenName != null">
+                screen_name = #{screenName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.loushi.model.UserOrderCrawlLike">
+    update user_order_crawl_like
+    set task_id = #{taskId,jdbcType=INTEGER},
+      msg_id = #{msgId,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=VARCHAR},
+      screen_name = #{screenName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

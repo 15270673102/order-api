@@ -1,0 +1,59 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+  tomcat:
+    basedir: ${user.home}/tomcat/tmp
+
+logging:
+  file: C:\order-api\order-api.log
+  level:
+    root: info
+
+spring:
+  application:
+    name: order-api
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm
+    time-zone: GMT+8
+  rabbitmq:
+    host: 192.168.88.201
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+  redis:
+    database: 0
+    host: 192.168.88.201
+    port: 6379
+    password: 123456
+  datasource:
+    url: jdbc:mysql://192.168.88.201:3306/order_api?characterEncoding=utf8
+    username: devuser
+    password: mypassword
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    #http://127.0.0.1:8083/druid/index.html
+    druid:
+      filters: stat,wall
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=200
+      stat-view-servlet:
+        login-username: admin
+        login-password: 123
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
